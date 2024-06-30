@@ -22,7 +22,7 @@ resource "azurerm_app_service" "main" {
   app_service_plan_id = azurerm_app_service_plan.main.id
 
   site_config {
-    linux_fx_version = "NODE|14-lts"  # Replace with a supported runtime stack if needed
+        linux_fx_version = "DOTNETCORE|3.1"  # Using .NET Core 3.1 runtime
   }
 
   app_settings = {
