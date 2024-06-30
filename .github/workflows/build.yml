@@ -22,3 +22,7 @@ jobs:
     - name: Build the Rust project
       working-directory: rust_saas_app
       run: cargo build --verbose
+
+    - name: Run tests
+      working-directory: rust_saas_app
+      run: cargo test --verbose
