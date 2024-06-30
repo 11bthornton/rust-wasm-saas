@@ -1,4 +1,4 @@
-name: Build Rust Project
+name: Build and Test Rust Yew Application
 
 on:
   pull_request:
@@ -6,28 +6,35 @@ on:
       - '**'
   push:
     branches:
-      - '**'  # Adjust this to the branch you want to monitor
-  workflow_dispatch: # Allow manual triggering
+      - '**'
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  build:
-
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: install toolchain
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Rust
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
         target: wasm32-unknown-unknown
         override: true
         profile: minimal
-    - name: Install trunk
-      uses: jetli/trunk-action@v0.1.0
-      with:
-        version: 'latest'
-    - name: Build
+
+    - name: Install Trunk
+      run: cargo install trunk
+
+    - name: Install wasm-bindgen-cli
+      run: cargo install wasm-bindgen-cli
+
+    - name: Build the Rust Yew application
       run: trunk build
+      env:
+        RUSTFLAGS: '--cfg=web_sys_unstable_apis'
+
     - name: Run tests
       run: cargo test --verbose
