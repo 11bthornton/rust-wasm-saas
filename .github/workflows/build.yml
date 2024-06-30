@@ -83,17 +83,13 @@ jobs:
 
     - name: Extract Branch Name
       id: extract_branch
-      run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}" 
+      run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
-    - name: Remove Feature Prefix
-      id: remove_prefix
+    - name: Format Branch Name for Resource Group
+      id: format_branch_name
       run: |
-        if [[ "${{ steps.extract_branch.outputs.branch }}" == feature/* ]]; then
-          RG_NAME="${{ steps.extract_branch.outputs.branch#feature/ }}"
-        else
-          RG_NAME="${{ steps.extract_branch.outputs.branch }}"
-        fi
-        echo "##[set-output name=resource_group;]$RG_NAME"
+        RG_NAME=$(echo "${{ env.branch }}" | sed 's/\//-/g')
+        echo "resource_group=$RG_NAME" >> $GITHUB_ENV
 
     - name: Azure Login
       uses: azure/login@v1
@@ -115,4 +111,4 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        TF_VAR_resource_group_name: ${{ steps.remove_prefix.outputs.resource_group }}
+        TF_VAR_resource_group_name: ${{ env.resource_group }}
