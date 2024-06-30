@@ -3,7 +3,7 @@ name: Build Rust Project
 on:
   push:
     branches:
-      - '*'  # Adjust this to the branch you want to monitor
+      - '**'  # Adjust this to the branch you want to monitor
   workflow_dispatch: # Allow manual triggering
 
 jobs:
