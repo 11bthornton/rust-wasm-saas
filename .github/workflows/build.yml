@@ -1,0 +1,24 @@
+name: Build Rust Project
+
+on:
+  push:
+    branches:
+      - '*'  # Adjust this to the branch you want to monitor
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+
+    - name: Build the Rust project
+      working-directory: rust_saas_app
+      run: cargo build --verbose
