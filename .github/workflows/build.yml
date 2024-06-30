@@ -1,6 +1,9 @@
 name: Build Rust Project
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - '**'  # Adjust this to the branch you want to monitor
@@ -19,13 +22,13 @@ jobs:
       with:
         toolchain: stable
 
-    - name: Build the Rust project
-      working-directory: rust_saas_app
-      run: cargo build --verbose
+    - name: Install wasm-pack
+      run: |
+        curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-    - name: Run tests
+    - name: Build the Rust yew application
       working-directory: rust_saas_app
-      run: cargo test --verbose
+      run: wasm-pack build --target web
 
     - name: Run tests
       working-directory: rust_saas_app
