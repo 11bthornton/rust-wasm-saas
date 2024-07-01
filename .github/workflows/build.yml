@@ -65,7 +65,7 @@ jobs:
 
     - name: Build the Rust Yew application
       working-directory: rust_saas_app
-      run: trunk build
+      run: trunk build --release
       env:
         RUSTFLAGS: '--cfg=web_sys_unstable_apis'
 
@@ -124,11 +124,26 @@ jobs:
         TF_VAR_resource_group_name: ${{ env.resource_group }}
 
     - name: Capture Terraform Output
+      id: tf_output
       working-directory: pipeline/terraform
-      run: terraform output
+      run: terraform output -json > output.json
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         TF_VAR_resource_group_name: ${{ env.resource_group }}
+
+    - name: Parse Static Site Hostname
+      id: parse_static_site_hostname
+      run: echo "static_site_hostname=$(jq -r '.static_site_default_hostname.value' output.json)" >> $GITHUB_ENV
+
+    - name: Deploy to Azure Static Web Apps
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        action: "upload"
+        app_location: "/"
+        output_location: "rust_saas_app/dist"
+        app_build_command: "trunk build --release"

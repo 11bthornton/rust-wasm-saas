@@ -1,5 +1,3 @@
-# variables.tf
-
 variable "resource_group_name" {
   description = "The name of the resource group"
   type        = string
@@ -12,14 +10,20 @@ variable "location" {
   default     = "UK South"
 }
 
-variable "app_service_plan_name" {
-  description = "The name of the App Service Plan"
+variable "static_site_name" {
+  description = "The name of the Static Web App"
   type        = string
-  default     = "rust-yew-app-service-plan"
+  default     = "rust-yew-static-site"
 }
 
-variable "app_service_name" {
-  description = "The name of the App Service"
+variable "branch_name" {
+  description = "The branch to deploy"
   type        = string
-  default     = "rust-yew-app-service"
+  default     = "main"
+}
+
+variable "repository_url" {
+  description = "The URL of the repository"
+  type        = string
+  default     = "https://github.com/your/repo"
 }
