@@ -12,5 +12,5 @@ resource "azurerm_static_site" "main" {
 }
 
 output "static_site_default_hostname" {
-  value = azurerm_static_site.main.default_hostname
+  value = azurerm_static_site.main.default_host_name
 }
