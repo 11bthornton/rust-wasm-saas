@@ -1,0 +1,5 @@
+*.target
+*.lock
+pipeline/terraform/.terraform
+rust_saas_app/target
+rust_saas_app/dist
